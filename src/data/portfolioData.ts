@@ -195,17 +195,6 @@ export const skillCategories: SkillCategory[] = [
 
 export const achievements: AchievementItem[] = [
   {
-    id: 'marketing-core-head',
-    title: 'Dream Merchants — MBA Marketing Department',
-    organization: 'Christ (Deemed to be University), Delhi',
-    role: 'Departmental Core Head',
-    badge: 'A1',
-    description:
-      'Led the MBA Marketing Core Team, driving strategic planning, brand communication, and promotional initiatives for departmental events, student activities, and industry engagements',
-    impact:
-      'Focused on strengthening the MBA department’s visibility, increasing student engagement, and creating a more consistent and impactful marketing presence across campus.',
-  },
-  {
     id: 'fusion-x-head',
     title: 'Promotion Head — Fusion X 2.0',
     organization: 'Christ (Deemed to be University), Delhi',
