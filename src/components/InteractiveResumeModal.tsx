@@ -104,12 +104,12 @@ export const InteractiveResumeModal: React.FC<InteractiveResumeModalProps> = ({ 
       {
         period: '08/2024 – 04/2026',
         degree: 'Master of Business Administration in Marketing (Christ University, Delhi)',
-        score: 'CGPA: (7.2/10)',
+        score: 'CGPA: 7.2/10',
       },
       {
         period: '07/2020 – 07/2023',
         degree: 'Bachelor of Commerce (University of Lucknow)',
-        score: 'CGPA: 6.8/10)',
+        score: 'CGPA: 6.8/10',
       },
     ],
   };
@@ -165,9 +165,161 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
     document.body.removeChild(element);
   };
 
+  const generateNativeVectorPdf = () => {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'a4',
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 36;
+    const contentWidth = pageWidth - margin * 2;
+    let y = 38;
+
+    // Header: Name
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(15, 23, 42);
+    doc.text(resumeData.name, pageWidth / 2, y, { align: 'center' });
+    y += 18;
+
+    // Contact details bar
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(51, 65, 85);
+    const contactLine = `LinkedIn: ${resumeData.linkedinText}   |   Email: ${resumeData.email}   |   Phone: ${resumeData.phone}`;
+    doc.text(contactLine, pageWidth / 2, y, { align: 'center' });
+    y += 18;
+
+    const printSectionHeader = (title: string) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text(title.toUpperCase(), margin, y);
+      y += 3;
+      doc.setDrawColor(30, 41, 59);
+      doc.setLineWidth(1);
+      doc.line(margin, y, margin + contentWidth, y);
+      y += 11;
+    };
+
+    // Summary Section
+    printSectionHeader('Summary');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(51, 65, 85);
+    const summaryLines = doc.splitTextToSize(resumeData.summary, contentWidth);
+    doc.text(summaryLines, margin, y);
+    y += summaryLines.length * 11 + 8;
+
+    // Work Experience & Training
+    printSectionHeader('Work Experience & Training');
+    resumeData.experiences.forEach((exp) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(30, 58, 138);
+      doc.text(exp.company, margin, y);
+
+      const compWidth = doc.getTextWidth(exp.company);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(15, 23, 42);
+      doc.text(` | ${exp.role}`, margin + compWidth, y);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(71, 85, 105);
+      doc.text(`(${exp.period})`, margin + contentWidth, y, { align: 'right' });
+      y += 11;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(51, 65, 85);
+      exp.bullets.forEach((bullet) => {
+        const bulletLines = doc.splitTextToSize(`– ${bullet}`, contentWidth - 8);
+        doc.text(bulletLines, margin + 4, y);
+        y += bulletLines.length * 10;
+      });
+      y += 3;
+    });
+    y += 4;
+
+    // Projects
+    printSectionHeader('Projects');
+    resumeData.projects.forEach((proj) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text(proj.title, margin, y);
+      y += 10;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(51, 65, 85);
+      proj.bullets.forEach((bullet) => {
+        const bulletLines = doc.splitTextToSize(`– ${bullet}`, contentWidth - 8);
+        doc.text(bulletLines, margin + 4, y);
+        y += bulletLines.length * 10;
+      });
+      y += 3;
+    });
+    y += 4;
+
+    // Skills
+    printSectionHeader('Skills');
+    resumeData.skills.forEach((skill) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(15, 23, 42);
+      const prefix = `– ${skill.category}: `;
+      doc.text(prefix, margin, y);
+      const prefixWidth = doc.getTextWidth(prefix);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      const itemsLines = doc.splitTextToSize(skill.items, contentWidth - prefixWidth);
+      doc.text(itemsLines, margin + prefixWidth, y);
+      y += itemsLines.length * 10;
+    });
+    y += 5;
+
+    // Certifications
+    printSectionHeader('Certifications');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(51, 65, 85);
+    resumeData.certifications.forEach((cert) => {
+      doc.text(`– ${cert}`, margin, y);
+      y += 10;
+    });
+    y += 5;
+
+    // Education
+    printSectionHeader('Education');
+    resumeData.education.forEach((edu) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(71, 85, 105);
+      doc.text(edu.period, margin, y);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(15, 23, 42);
+      doc.text(edu.degree, margin + 80, y);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 23, 42);
+      doc.text(edu.score, margin + contentWidth, y, { align: 'right' });
+      y += 11;
+    });
+
+    doc.save('Vaani_Malviya_Resume.pdf');
+  };
+
   const handleDownloadPdf = async () => {
     const paperElement = document.getElementById('resume-paper');
-    if (!paperElement) return;
+    if (!paperElement) {
+      generateNativeVectorPdf();
+      return;
+    }
 
     setIsGeneratingPdf(true);
 
@@ -178,18 +330,18 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
     const prevRadius = paperElement.style.borderRadius;
 
     try {
-      // Temporarily lock element to desktop standard A4 width for consistent rendering
+      // Temporarily lock element to desktop standard A4 width for consistent pixel-perfect rendering
       paperElement.style.width = '800px';
       paperElement.style.maxWidth = '800px';
       paperElement.style.boxShadow = 'none';
       paperElement.style.border = 'none';
       paperElement.style.borderRadius = '0';
 
-      // Capture exact DOM structure including font family, size, weights, and alignment
       const dataUrl = await toPng(paperElement, {
-        quality: 0.98,
-        pixelRatio: 2.5,
+        quality: 1,
+        pixelRatio: 2,
         backgroundColor: '#ffffff',
+        cacheBust: true,
       });
 
       const img = new Image();
@@ -206,8 +358,8 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
 
       const pageWidth = 210;
       const pageHeight = 297;
-      const marginX = 8;
-      const marginY = 8;
+      const marginX = 6;
+      const marginY = 6;
       const printableWidth = pageWidth - marginX * 2;
       const imgAspect = img.width / img.height;
       const calculatedHeight = printableWidth / imgAspect;
@@ -227,7 +379,9 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
       pdf.addImage(dataUrl, 'PNG', posX, posY, finalWidth, finalHeight, undefined, 'FAST');
       pdf.save('Vaani_Malviya_Resume.pdf');
     } catch (error) {
-      console.error('Error generating PDF:', error);
+      console.warn('DOM to image conversion notice, generating pristine vector PDF:', error);
+      // Seamless native vector PDF fallback ensures 100% reliable download in any browser context
+      generateNativeVectorPdf();
     } finally {
       paperElement.style.width = prevWidth;
       paperElement.style.maxWidth = prevMaxWidth;
@@ -241,7 +395,7 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
   return (
     <div
       id="resume-modal-backdrop"
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150"
       role="dialog"
       aria-modal="true"
       aria-labelledby="resume-dialog-title"
@@ -249,17 +403,17 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
     >
       <div
         id="resume-modal-container"
-        className="bg-black rounded-2xl max-w-4xl w-full max-h-[94vh] flex flex-col shadow-[0_0_70px_rgba(168,85,247,0.45)] overflow-hidden border border-purple-500/40"
+        className="bg-white rounded-2xl max-w-4xl w-full max-h-[94vh] flex flex-col shadow-[0_10px_50px_rgba(168,85,247,0.18),0_0_25px_rgba(192,132,252,0.15)] overflow-hidden border border-purple-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Controls Bar */}
-        <div className="no-print flex items-center justify-between px-4 sm:px-6 py-3.5 bg-black/95 border-b border-purple-500/30 flex-wrap gap-2">
+        <div className="no-print flex items-center justify-between px-4 sm:px-6 py-3.5 bg-white border-b border-stone-200 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <span id="resume-dialog-title" className="font-semibold text-white text-sm drop-shadow-[0_0_10px_rgba(168,85,247,0.3)]">
+            <span id="resume-dialog-title" className="font-semibold text-stone-900 text-sm">
               Curriculum Vitae View
             </span>
-            <span className="text-xs text-purple-300/80 hidden sm:inline">
-              (1-Page Standard Resume Format)
+            <span className="text-xs text-purple-700 font-medium px-2 py-0.5 rounded-md bg-purple-50 border border-purple-200 shadow-[0_0_8px_rgba(168,85,247,0.15)] hidden sm:inline">
+              1-Page Standard Resume Format
             </span>
           </div>
 
@@ -267,17 +421,17 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             <button
               onClick={handleCopyText}
               id="resume-copy-btn"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-black border border-purple-500/40 text-purple-200 hover:bg-purple-950/60 hover:text-white transition-all shadow-[0_0_12px_rgba(168,85,247,0.15)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-stone-50 border border-stone-300 text-stone-700 hover:bg-purple-50 hover:text-purple-900 hover:border-purple-300 hover:shadow-[0_0_12px_rgba(168,85,247,0.2)] transition-all shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden"
               title="Copy plain-text resume"
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-300">Copied</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-700">Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3.5 h-3.5 text-purple-300" />
+                  <Copy className="w-3.5 h-3.5 text-purple-600" />
                   <span>Copy Text</span>
                 </>
               )}
@@ -286,10 +440,10 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             <button
               onClick={handleDownloadText}
               id="resume-download-btn"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-black border border-purple-500/40 text-purple-200 hover:bg-purple-950/60 hover:text-white transition-all shadow-[0_0_12px_rgba(168,85,247,0.15)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-stone-50 border border-stone-300 text-stone-700 hover:bg-purple-50 hover:text-purple-900 hover:border-purple-300 hover:shadow-[0_0_12px_rgba(168,85,247,0.2)] transition-all shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden"
               title="Download plain-text CV (.txt)"
             >
-              <FileText className="w-3.5 h-3.5 text-purple-300" />
+              <FileText className="w-3.5 h-3.5 text-purple-600" />
               <span>Download (.txt)</span>
             </button>
 
@@ -297,7 +451,7 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
               onClick={handleDownloadPdf}
               disabled={isGeneratingPdf}
               id="resume-download-pdf-btn"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] border border-purple-300/50 cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden disabled:opacity-60 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-purple-700 via-purple-800 to-indigo-800 text-white hover:from-purple-600 hover:to-indigo-700 transition-all shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:shadow-[0_0_28px_rgba(147,51,234,0.6)] border border-purple-400 cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden disabled:opacity-60 disabled:cursor-not-allowed"
               title="Download PDF of this resume"
             >
               {isGeneratingPdf ? (
@@ -316,7 +470,7 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             <button
               onClick={onClose}
               id="resume-close-btn"
-              className="p-1.5 text-stone-400 hover:text-white hover:bg-purple-900/40 rounded-lg transition-colors ml-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden"
+              className="p-1.5 text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-colors ml-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden"
               aria-label="Close resume preview"
             >
               <X className="w-5 h-5" />
@@ -324,26 +478,26 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
           </div>
         </div>
 
-        {/* Resume Paper Content (Exact reproduction of authentic 1-page PDF) */}
-        <div id="resume-modal-paper-wrapper" className="overflow-y-auto p-3 sm:p-6 md:p-8 bg-stone-950/80">
+        {/* Resume Paper Content */}
+        <div id="resume-modal-paper-wrapper" className="overflow-y-auto p-3 sm:p-6 md:p-8 bg-stone-100/90">
           <div
             id="resume-paper"
-            className="bg-white rounded-lg shadow-[0_4px_30px_rgba(0,0,0,0.3)] p-6 sm:p-10 md:p-12 text-[#111] border border-stone-300 max-w-[800px] mx-auto text-[13px] sm:text-[13.5px] leading-snug font-sans select-text"
-            style={{ fontFamily: 'Calibri, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
+            className="bg-white rounded-lg shadow-[0_4px_30px_rgba(0,0,0,0.15)] p-6 sm:p-8 md:p-10 text-stone-900 border border-stone-300 max-w-[800px] mx-auto text-[13px] leading-relaxed select-text"
+            style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
           >
-            {/* Header: Name */}
-            <div className="text-center pb-2">
-              <h1 className="text-3xl sm:text-[34px] font-normal tracking-tight text-black">
+            {/* Header: Name & Role */}
+            <div className="text-center pb-2 border-b border-stone-200">
+              <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-stone-950">
                 {resumeData.name}
               </h1>
 
-              {/* Contact bar with icons matching original document */}
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-2 text-xs sm:text-[13px] text-[#222]">
+              {/* Contact bar with clean alignment and icons */}
+              <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 mt-2 text-xs text-stone-700">
                 <a
                   href={resumeData.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 hover:underline text-black group"
+                  className="inline-flex items-center gap-1 text-stone-900 hover:text-purple-700 transition-colors font-medium"
                 >
                   <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-xs bg-[#0a66c2] text-white text-[9px] font-bold">
                     in
@@ -351,60 +505,60 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
                   <span>{resumeData.linkedinText}</span>
                 </a>
 
-                <span className="text-stone-400">|</span>
+                <span className="text-stone-300 font-bold">|</span>
 
                 <a
                   href={`mailto:${resumeData.email}`}
-                  className="inline-flex items-center gap-1.5 hover:underline text-black group"
+                  className="inline-flex items-center gap-1 text-stone-900 hover:text-purple-700 transition-colors font-medium"
                 >
-                  <Mail className="w-3.5 h-3.5 text-[#0066cc]" />
+                  <Mail className="w-3.5 h-3.5 text-purple-700" />
                   <span>{resumeData.email}</span>
                 </a>
 
-                <span className="text-stone-400">|</span>
+                <span className="text-stone-300 font-bold">|</span>
 
                 <a
                   href={`tel:${resumeData.phone.replace(/\s+/g, '')}`}
-                  className="inline-flex items-center gap-1 hover:underline text-black"
+                  className="inline-flex items-center gap-1 text-stone-900 hover:text-purple-700 transition-colors font-medium"
                 >
-                  <Phone className="w-3.5 h-3.5 text-[#003366]" />
+                  <Phone className="w-3.5 h-3.5 text-purple-700" />
                   <span>{resumeData.phone}</span>
                 </a>
               </div>
             </div>
 
             {/* Section 1: Summary */}
-            <section className="mt-4">
-              <h2 className="text-[17px] font-bold text-black border-b border-black pb-0.5 mb-1.5">
+            <section className="mt-3.5">
+              <h2 className="text-[13px] font-bold uppercase tracking-wider text-stone-900 border-b border-stone-800 pb-0.5 mb-1.5">
                 Summary
               </h2>
-              <p className="text-justify text-[#222] leading-relaxed text-[12.5px] sm:text-[13px]">
+              <p className="text-stone-700 text-left leading-relaxed text-[12px]">
                 {resumeData.summary}
               </p>
             </section>
 
             {/* Section 2: Work Experience & Training */}
-            <section className="mt-4">
-              <h2 className="text-[17px] font-bold text-black border-b border-black pb-0.5 mb-2">
+            <section className="mt-3.5">
+              <h2 className="text-[13px] font-bold uppercase tracking-wider text-stone-900 border-b border-stone-800 pb-0.5 mb-2">
                 Work Experience &amp; Training
               </h2>
 
               <div className="space-y-3">
                 {resumeData.experiences.map((exp) => (
                   <div key={exp.company} className="space-y-1">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between text-[13px]">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between text-[12.5px]">
                       <div>
-                        <span className="text-[#335588] font-medium">{exp.company}</span>
-                        <span className="text-black"> | {exp.role}</span>
+                        <span className="font-bold text-[#1e3a8a]">{exp.company}</span>
+                        <span className="font-semibold text-stone-900"> | {exp.role}</span>
                       </div>
-                      <span className="text-black font-medium sm:text-right">
+                      <span className="font-medium text-stone-600 sm:text-right text-[12px]">
                         ({exp.period})
                       </span>
                     </div>
-                    <ul className="space-y-1 text-[#222] text-[12.5px] sm:text-[13px] leading-relaxed">
+                    <ul className="space-y-1 text-stone-700 text-[12px] leading-relaxed">
                       {exp.bullets.map((bullet, idx) => (
-                        <li key={idx} className="flex items-start gap-1.5 text-justify">
-                          <span className="select-none font-bold text-black">–</span>
+                        <li key={idx} className="flex items-start gap-1.5 text-left">
+                          <span className="select-none font-bold text-stone-900 shrink-0">–</span>
                           <span>{bullet}</span>
                         </li>
                       ))}
@@ -415,21 +569,21 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             </section>
 
             {/* Section 3: Projects */}
-            <section className="mt-4">
-              <h2 className="text-[17px] font-bold text-black border-b border-black pb-0.5 mb-2">
+            <section className="mt-3.5">
+              <h2 className="text-[13px] font-bold uppercase tracking-wider text-stone-900 border-b border-stone-800 pb-0.5 mb-2">
                 Projects
               </h2>
 
               <div className="space-y-3">
                 {resumeData.projects.map((proj) => (
                   <div key={proj.title} className="space-y-1">
-                    <div className="text-[13px] font-bold text-black">
+                    <div className="text-[12.5px] font-bold text-stone-900">
                       {proj.title}
                     </div>
-                    <ul className="space-y-1 text-[#222] text-[12.5px] sm:text-[13px] leading-relaxed">
+                    <ul className="space-y-1 text-stone-700 text-[12px] leading-relaxed">
                       {proj.bullets.map((bullet, idx) => (
-                        <li key={idx} className="flex items-start gap-1.5 text-justify">
-                          <span className="select-none font-bold text-black">–</span>
+                        <li key={idx} className="flex items-start gap-1.5 text-left">
+                          <span className="select-none font-bold text-stone-900 shrink-0">–</span>
                           <span>{bullet}</span>
                         </li>
                       ))}
@@ -440,16 +594,16 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             </section>
 
             {/* Section 4: Skills */}
-            <section className="mt-4">
-              <h2 className="text-[17px] font-bold text-black border-b border-black pb-0.5 mb-2">
+            <section className="mt-3.5">
+              <h2 className="text-[13px] font-bold uppercase tracking-wider text-stone-900 border-b border-stone-800 pb-0.5 mb-2">
                 Skills
               </h2>
-              <div className="space-y-1.5 text-[#222] text-[12.5px] sm:text-[13px] leading-relaxed">
+              <div className="space-y-1 text-stone-700 text-[12px] leading-relaxed">
                 {resumeData.skills.map((skill) => (
-                  <p key={skill.category} className="flex items-start gap-1.5">
-                    <span className="select-none font-bold text-black">–</span>
+                  <p key={skill.category} className="flex items-start gap-1.5 text-left">
+                    <span className="select-none font-bold text-stone-900 shrink-0">–</span>
                     <span>
-                      <strong className="font-semibold text-black">{skill.category}:</strong> {skill.items}
+                      <strong className="font-semibold text-stone-900">{skill.category}:</strong> {skill.items}
                     </span>
                   </p>
                 ))}
@@ -457,14 +611,14 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             </section>
 
             {/* Section 5: Certifications */}
-            <section className="mt-4">
-              <h2 className="text-[17px] font-bold text-black border-b border-black pb-0.5 mb-2">
+            <section className="mt-3.5">
+              <h2 className="text-[13px] font-bold uppercase tracking-wider text-stone-900 border-b border-stone-800 pb-0.5 mb-2">
                 Certifications
               </h2>
-              <ul className="space-y-1 text-[#222] text-[12.5px] sm:text-[13px] leading-relaxed">
+              <ul className="space-y-1 text-stone-700 text-[12px] leading-relaxed">
                 {resumeData.certifications.map((cert, idx) => (
-                  <li key={idx} className="flex items-start gap-1.5">
-                    <span className="select-none font-bold text-black">–</span>
+                  <li key={idx} className="flex items-start gap-1.5 text-left">
+                    <span className="select-none font-bold text-stone-900 shrink-0">–</span>
                     <span>{cert}</span>
                   </li>
                 ))}
@@ -472,18 +626,18 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
             </section>
 
             {/* Section 6: Education */}
-            <section className="mt-4">
-              <h2 className="text-[17px] font-bold text-black border-b border-black pb-0.5 mb-2">
+            <section className="mt-3.5">
+              <h2 className="text-[13px] font-bold uppercase tracking-wider text-stone-900 border-b border-stone-800 pb-0.5 mb-2">
                 Education
               </h2>
-              <div className="space-y-1 text-[#222] text-[12.5px] sm:text-[13px]">
+              <div className="space-y-1 text-stone-700 text-[12px]">
                 {resumeData.education.map((edu, idx) => (
                   <div key={idx} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                     <div className="flex flex-wrap items-baseline gap-x-3">
-                      <span className="font-medium text-black">{edu.period}</span>
-                      <span className="text-[#222]">{edu.degree}</span>
+                      <span className="font-semibold text-stone-900">{edu.period}</span>
+                      <span className="text-stone-800">{edu.degree}</span>
                     </div>
-                    <span className="font-medium text-black sm:text-right whitespace-nowrap">
+                    <span className="font-semibold text-stone-900 sm:text-right whitespace-nowrap">
                       {edu.score}
                     </span>
                   </div>
