@@ -68,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
       id="main-navbar"
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-200 ${
         isScrolled
-          ? 'bg-black/90 backdrop-blur-xl border-b border-purple-500/30 shadow-[0_4px_30px_rgba(168,85,247,0.2)]'
+          ? 'bg-white/92 backdrop-blur-xl border-b border-purple-200/80 shadow-[0_4px_25px_rgba(168,85,247,0.12),0_0_15px_rgba(192,132,252,0.1)]'
           : 'bg-transparent border-b border-transparent'
       }`}
     >
@@ -80,14 +80,14 @@ export const Navbar: React.FC<NavbarProps> = () => {
             id="nav-brand-logo"
             className="flex items-center gap-3 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 via-purple-900 to-black border border-purple-400/50 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover:border-purple-300 group-hover:shadow-[0_0_25px_rgba(192,132,252,0.6)] transition-all">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-700 via-purple-800 to-indigo-900 border border-purple-400/40 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-[0_0_20px_rgba(168,85,247,0.45)] group-hover:shadow-[0_0_28px_rgba(168,85,247,0.65)] group-hover:scale-105 transition-all">
               VM
             </div>
             <div>
-              <span className="block text-base font-semibold text-white tracking-tight leading-tight group-hover:text-purple-300 transition-colors">
+              <span className="block text-base font-semibold text-stone-900 tracking-tight leading-tight group-hover:text-purple-700 transition-colors">
                 {personalInfo.name}
               </span>
-              <span className="block text-xs font-medium text-purple-300/80 tracking-normal">
+              <span className="block text-xs font-medium text-purple-700 tracking-normal">
                 Brand & Marketing Strategist
               </span>
             </div>
@@ -102,10 +102,10 @@ export const Navbar: React.FC<NavbarProps> = () => {
                   key={link.id}
                   href={link.href}
                   id={`nav-link-${link.id}`}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden ${
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:outline-hidden ${
                     isActive
-                      ? 'text-white bg-purple-600/30 border border-purple-400/50 font-semibold shadow-[0_0_15px_rgba(168,85,247,0.35)]'
-                      : 'text-stone-300 hover:text-white hover:bg-purple-950/50 hover:shadow-[0_0_12px_rgba(168,85,247,0.15)]'
+                      ? 'text-purple-950 bg-purple-100/90 border border-purple-300 font-semibold shadow-[0_0_14px_rgba(168,85,247,0.25)]'
+                      : 'text-stone-600 hover:text-purple-900 hover:bg-purple-50/80 hover:shadow-[0_0_10px_rgba(168,85,247,0.15)]'
                   }`}
                 >
                   {link.label}
@@ -119,7 +119,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-stone-300 hover:text-white hover:bg-purple-950/60 rounded-lg focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-hidden cursor-pointer"
+              className="p-2 text-stone-700 hover:text-purple-900 hover:bg-purple-50 rounded-lg focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:outline-hidden cursor-pointer"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-nav-dropdown"
               aria-label="Toggle navigation menu"
@@ -134,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
       {mobileMenuOpen && (
         <div
           id="mobile-nav-dropdown"
-          className="md:hidden bg-black/95 backdrop-blur-2xl border-b border-purple-500/30 px-4 pt-2 pb-5 space-y-1 shadow-[0_10px_35px_rgba(168,85,247,0.2)]"
+          className="md:hidden bg-white/95 backdrop-blur-2xl border-b border-purple-100 px-4 pt-2 pb-5 space-y-1 shadow-lg"
         >
           {navLinks.map((link) => (
             <a
@@ -144,8 +144,8 @@ export const Navbar: React.FC<NavbarProps> = () => {
               onClick={() => setMobileMenuOpen(false)}
               className={`block px-3 py-2 text-base font-medium rounded-lg transition-colors ${
                 activeSection === link.id
-                  ? 'text-white bg-purple-600/30 border border-purple-400/50 font-semibold shadow-[0_0_12px_rgba(168,85,247,0.3)]'
-                  : 'text-stone-300 hover:text-white hover:bg-purple-950/40'
+                  ? 'text-purple-950 bg-purple-100/90 border border-purple-300 font-semibold shadow-xs'
+                  : 'text-stone-600 hover:text-purple-900 hover:bg-purple-50'
               }`}
             >
               {link.label}
