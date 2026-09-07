@@ -3,8 +3,8 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #000000;
-    color: #F1F5F9;
+    background-color: #ffffff;
+    color: #1c1917;
   }
 }
 
@@ -12,71 +12,116 @@
   font-family: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
 }
 
-/* Custom dark scrollbar */
+/* Custom clean light scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2e1065;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #581c87;
+  background: #9333ea;
 }
 
-/* Glassmorphism & purple ambient glow helpers */
+/* Light glassmorphism & purple accent panel helpers */
 .glass-panel {
-  background: rgba(10, 4, 18, 0.75);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(168, 85, 247, 0.25);
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.12);
+  box-shadow: 0 4px 25px rgba(168, 85, 247, 0.12), 0 0 15px rgba(192, 132, 252, 0.15);
 }
 
 .glass-panel:hover {
-  border-color: rgba(192, 132, 252, 0.5);
-  box-shadow: 0 0 35px rgba(168, 85, 247, 0.25);
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 8px 35px rgba(168, 85, 247, 0.22), 0 0 25px rgba(192, 132, 252, 0.25);
 }
 
 .glass-panel-subtle {
-  background: rgba(8, 3, 14, 0.65);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  box-shadow: 0 2px 18px rgba(168, 85, 247, 0.08);
 }
 
-/* Purple glow utility classes */
-.purple-glow-sm {
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+/* Luminous glowing utility classes */
+.glow-card {
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.1), 0 0 15px rgba(192, 132, 252, 0.1);
+  border-color: rgba(216, 180, 254, 0.8);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.purple-glow {
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+.glow-card:hover {
+  border-color: rgba(168, 85, 247, 0.7);
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.22), 0 0 25px rgba(192, 132, 252, 0.3);
+  transform: translateY(-2px);
 }
 
-.purple-glow-lg {
-  box-shadow: 0 0 45px rgba(168, 85, 247, 0.4);
+.glow-badge {
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(192, 132, 252, 0.15);
+}
+
+.glow-badge-emerald {
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35), inset 0 0 8px rgba(52, 211, 153, 0.2);
+}
+
+.glow-badge-cyan {
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.35);
+}
+
+.glow-btn-primary {
+  box-shadow: 0 0 25px rgba(147, 51, 234, 0.45), 0 4px 15px rgba(126, 34, 206, 0.3);
+  transition: all 0.25s ease;
+}
+
+.glow-btn-primary:hover {
+  box-shadow: 0 0 35px rgba(147, 51, 234, 0.65), 0 0 15px rgba(192, 132, 252, 0.5), 0 6px 20px rgba(126, 34, 206, 0.4);
+  transform: translateY(-1px);
+}
+
+.glow-btn-secondary {
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.18);
+  transition: all 0.25s ease;
+}
+
+.glow-btn-secondary:hover {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.32);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.glow-icon {
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.35);
+}
+
+.glow-avatar {
+  box-shadow: 0 0 35px rgba(168, 85, 247, 0.35), 0 0 15px rgba(192, 132, 252, 0.3);
+}
+
+.glow-avatar:hover {
+  box-shadow: 0 0 50px rgba(168, 85, 247, 0.5), 0 0 25px rgba(192, 132, 252, 0.45);
 }
 
 .glow-text-purple {
-  text-shadow: 0 0 24px rgba(192, 132, 252, 0.5);
+  text-shadow: 0 0 20px rgba(147, 51, 234, 0.3), 0 0 40px rgba(168, 85, 247, 0.2);
 }
 
-@keyframes purplePulse {
+@keyframes luminousPulse {
   0%, 100% {
-    box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.3), 0 0 4px rgba(192, 132, 252, 0.2);
   }
   50% {
-    box-shadow: 0 0 32px rgba(192, 132, 252, 0.5);
+    box-shadow: 0 0 25px rgba(147, 51, 234, 0.5), 0 0 10px rgba(168, 85, 247, 0.4);
   }
 }
 
-.purple-pulse {
-  animation: purplePulse 3s ease-in-out infinite;
+.luminous-pulse {
+  animation: luminousPulse 2.8s ease-in-out infinite;
 }
 
 @media print {
