@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { personalInfo } from '../data/portfolioData';
+import { copyToClipboard } from '../utils/clipboard';
 import {
   Mail,
   Phone,
@@ -29,7 +30,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenResume }) 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    inquiryType: 'Got opportunity for you',
+    inquiryType: 'Full-time Brand / Marketing Role',
     message: '',
   });
 
@@ -37,16 +38,20 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenResume }) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(personalInfo.email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2200);
+  const handleCopyEmail = async () => {
+    const success = await copyToClipboard(personalInfo.email);
+    if (success) {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2200);
+    }
   };
 
-  const handleCopyPhone = () => {
-    navigator.clipboard.writeText(personalInfo.phone.replace(/\s+/g, ''));
-    setCopiedPhone(true);
-    setTimeout(() => setCopiedPhone(false), 2200);
+  const handleCopyPhone = async () => {
+    const success = await copyToClipboard(personalInfo.phone.replace(/\s+/g, ''));
+    if (success) {
+      setCopiedPhone(true);
+      setTimeout(() => setCopiedPhone(false), 2200);
+    }
   };
 
   const validateForm = () => {
@@ -97,11 +102,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenResume }) 
     }, 600);
   };
 
-  const handleCopyDraft = () => {
+  const handleCopyDraft = async () => {
     const text = `To: ${personalInfo.email}\nSubject: [Portfolio Inquiry: ${formData.inquiryType}] from ${formData.name}\n\nHi Vaani,\n\nI am ${formData.name} (${formData.email}).\n\n${formData.message}\n\nRegards,\n${formData.name}`;
-    navigator.clipboard.writeText(text);
-    setCopiedDraft(true);
-    setTimeout(() => setCopiedDraft(false), 2200);
+    const success = await copyToClipboard(text);
+    if (success) {
+      setCopiedDraft(true);
+      setTimeout(() => setCopiedDraft(false), 2200);
+    }
   };
 
   return (

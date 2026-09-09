@@ -48,7 +48,7 @@ export const experiences: ExperienceItem[] = [
     tagline: 'Worked on market intelligence and competitive analysis to support strategic growth and market expansion initiatives.',
     bullets: [
       'Analyzed 480+ Global Capability Centers (GCCs) and a 2.1 lakh+ talent ecosystem to identify high-potential expansion opportunities across Bengaluru and Hyderabad.',
-      'Conducted competitive benchmarking of Pristyn Cares ₹644 Cr FY24 business model to identify strategic gaps and positioning opportunities.',
+      'Conducted competitive benchmarking of Pristyn Care’s ₹644 Cr FY24 business model to identify strategic gaps and positioning opportunities.',
       'Translated market and competitor research into actionable insights for understanding growth opportunities.',
       'Developed practical experience in market research, competitive analysis, strategic marketing, and data-driven decision-making.',
     ],
@@ -160,9 +160,9 @@ export const skillCategories: SkillCategory[] = [
       { name: 'SEO & SEM', highlight: true },
       { name: 'Content & Social Media Marketing', highlight: true },
       { name: 'AI-Powered Marketing', highlight: true },
-      { name: 'Email Marketing & Marketing Automation' },
-      { name: 'Marketing Analytics & Data Insights ' },
-      { name: 'Marketing Automation' },
+      { name: 'Email Marketing & Drip Campaigns' },
+      { name: 'Marketing Analytics & Data Insights' },
+      { name: 'Marketing Automation & Workflows' },
     ],
   },
   {
@@ -175,7 +175,7 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Python (Basic)' },
       { name: 'SQL' },
       { name: 'Canva' },
-      { name: 'ChatGpt, Google Gemini, Gamma, Google AI Studio' },
+      { name: 'ChatGPT, Google Gemini, Gamma, Google AI Studio' },
     ],
   },
   {
@@ -194,6 +194,17 @@ export const skillCategories: SkillCategory[] = [
 ];
 
 export const achievements: AchievementItem[] = [
+  {
+    id: 'marketing-core-head',
+    title: 'Dream Merchants — MBA Marketing Department',
+    organization: 'Christ (Deemed to be University), Delhi',
+    role: 'Departmental Core Head',
+    badge: 'A1',
+    description:
+      'Led the MBA Marketing Core Team, driving strategic planning, brand communication, and promotional initiatives for departmental events, student activities, and industry engagements',
+    impact:
+      'Focused on strengthening the MBA department’s visibility, increasing student engagement, and creating a more consistent and impactful marketing presence across campus.',
+  },
   {
     id: 'fusion-x-head',
     title: 'Promotion Head — Fusion X 2.0',
@@ -216,7 +227,7 @@ export const educationList: EducationItem[] = [
     score: 'CGPA: 7.2 / 10',
     highlights: [
       'Elected Marketing Core Head for the MBA Marketing Department',
-      'Partipated in 16th International Conference on Redefining Innovation,Inclusion and Sustainability in Humanitarian Supply Chains',
+      'Participated in 16th International Conference on Redefining Innovation, Inclusion and Sustainability in Humanitarian Supply Chains',
       'Author of Master Thesis on Gustatory Sensory Marketing (N=353)',
     ],
   },
