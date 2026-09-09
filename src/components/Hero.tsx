@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { personalInfo, experiences } from '../data/portfolioData';
+import { copyToClipboard } from '../utils/clipboard';
 import {
   ArrowRight,
   FileText,
@@ -22,10 +23,12 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ onOpenResume }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(personalInfo.email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2200);
+  const handleCopyEmail = async () => {
+    const success = await copyToClipboard(personalInfo.email);
+    if (success) {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2200);
+    }
   };
 
   return (
