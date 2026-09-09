@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { certifications } from '../data/portfolioData';
+import { copyToClipboard } from '../utils/clipboard';
 import { X, Copy, Check, Download, FileText, Mail, Phone, Loader2 } from 'lucide-react';
-import jsPDF from 'jspdf';
-import { toPng } from 'html-to-image';
 
 interface InteractiveResumeModalProps {
   isOpen: boolean;
@@ -149,23 +148,28 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
     `.trim();
   };
 
-  const handleCopyText = () => {
-    navigator.clipboard.writeText(getPlainTextResume());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopyText = async () => {
+    const success = await copyToClipboard(getPlainTextResume());
+    if (success) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleDownloadText = () => {
-    const element = document.createElement('a');
     const file = new Blob([getPlainTextResume()], { type: 'text/plain;charset=utf-8' });
-    element.href = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
+    const element = document.createElement('a');
+    element.href = url;
     element.download = 'Vaani_Malviya_Resume.txt';
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
   };
 
-  const generateNativeVectorPdf = () => {
+  const generateNativeVectorPdf = async () => {
+    const { default: jsPDF } = await import('jspdf');
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'pt',
@@ -317,7 +321,7 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
   const handleDownloadPdf = async () => {
     const paperElement = document.getElementById('resume-paper');
     if (!paperElement) {
-      generateNativeVectorPdf();
+      await generateNativeVectorPdf();
       return;
     }
 
@@ -330,6 +334,9 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
     const prevRadius = paperElement.style.borderRadius;
 
     try {
+      const { toPng } = await import('html-to-image');
+      const { default: jsPDF } = await import('jspdf');
+
       // Temporarily lock element to desktop standard A4 width for consistent pixel-perfect rendering
       paperElement.style.width = '800px';
       paperElement.style.maxWidth = '800px';
@@ -381,7 +388,7 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
     } catch (error) {
       console.warn('DOM to image conversion notice, generating pristine vector PDF:', error);
       // Seamless native vector PDF fallback ensures 100% reliable download in any browser context
-      generateNativeVectorPdf();
+      await generateNativeVectorPdf();
     } finally {
       paperElement.style.width = prevWidth;
       paperElement.style.maxWidth = prevMaxWidth;
@@ -395,7 +402,7 @@ ${resumeData.education.map((e) => `${e.period}   ${e.degree}   ${e.score}`).join
   return (
     <div
       id="resume-modal-backdrop"
-      className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 overflow-y-auto bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150"
       role="dialog"
       aria-modal="true"
       aria-labelledby="resume-dialog-title"
