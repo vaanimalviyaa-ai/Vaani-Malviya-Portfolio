@@ -31,8 +31,8 @@
 /* Light glassmorphism & purple accent panel helpers */
 .glass-panel {
   background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(168, 85, 247, 0.25);
   box-shadow: 0 4px 25px rgba(168, 85, 247, 0.12), 0 0 15px rgba(192, 132, 252, 0.15);
 }
@@ -44,8 +44,8 @@
 
 .glass-panel-subtle {
   background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(168, 85, 247, 0.2);
   box-shadow: 0 2px 18px rgba(168, 85, 247, 0.08);
 }
